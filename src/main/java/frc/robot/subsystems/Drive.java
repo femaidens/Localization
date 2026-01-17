@@ -113,6 +113,7 @@ public class Drive extends SubsystemBase implements Logged {
       return gyro.getRotation2d();
     }
 
+    @Log.NT
     public Pose2d getPose2d(){
         return swerveEstimator.getEstimatedPosition();
     }
