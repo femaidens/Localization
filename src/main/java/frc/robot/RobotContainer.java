@@ -5,7 +5,7 @@
 package frc.robot;
 
 import frc.robot.Constants.OperatorConstants;
-import frc.robot.subsystems.Vision;
+import frc.robot.subsystems.Drive;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.RunCommand;
@@ -23,22 +23,22 @@ public class RobotContainer {
 
   // Replace with CommandPS4Controller or CommandJoystick if needed
     private final CommandXboxController driveJoy = new CommandXboxController(OperatorConstants.DRIVER_PORT);
-    private final Vision vision;
+    private final Drive drive;
 
 public RobotContainer() {
-          vision = new Vision();
+          drive = new Drive();
          configureBindings();
         configureDefaultCmds();
   }
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
    private void configureDefaultCmds() {
-        vision.setDefaultCommand(
+        drive.setDefaultCommand(
                 new RunCommand(
-                        () -> vision.driveFromVision(
+                        () -> drive.drive(
                                 () -> MathUtil.applyDeadband(driveJoy.getLeftY(), 0.1),
                                 () -> MathUtil.applyDeadband(driveJoy.getLeftX(), 0.1),
                                 () -> MathUtil.applyDeadband(driveJoy.getRightX(), 0.1)),
-                        vision));
+                        drive));
    }
 
   
