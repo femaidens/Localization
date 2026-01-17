@@ -11,6 +11,7 @@ import static edu.wpi.first.units.Units.Seconds;
 import static edu.wpi.first.units.Units.Volts;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.function.DoubleSupplier;
 
 import org.photonvision.EstimatedRobotPose;
@@ -327,7 +328,7 @@ public class Drive extends SubsystemBase implements Logged {
   @Override
   public void periodic() {
 
-    swerveEstimator.update(getGyroRotation2d(), getSwerveModulePosition());
+    swerveEstimator.update(gyro.getRotation2d(), getSwerveModulePosition());
 
     List<EstimatedRobotPose> visionUpdates = VisionII.getVisionUpdates();
 
