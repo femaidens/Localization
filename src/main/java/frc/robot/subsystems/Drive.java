@@ -62,14 +62,7 @@ public class Drive extends SubsystemBase implements Logged {
 
   /** Creates a new Drive. */
   public Drive() {
-    swerveEstimator = new SwerveDrivePoseEstimator(
-        DriveConstants.Drivetrain.kDriveKinematics,
-        getGyroRotation2d(),
-        getSwerveModulePosition(),
-        new Pose2d(),
-        DriveConstants.Drivetrain.STATE_STD_DEV,
-        DriveConstants.Drivetrain.VISION_STD_DEV
-    );
+
     // frontLeft = new ModuleSpark(DrivetrainPorts.FRONT_LEFT_DRIVE, DrivetrainPorts.FRONT_LEFT_TURN, Translation.FRONT_LEFT_ANGOFFSET);
     // frontRight = new ModuleSpark(DrivetrainPorts.FRONT_RIGHT_DRIVE, DrivetrainPorts.FRONT_RIGHT_TURN, Translation.FRONT_RIGHT_ANGOFFSET);
     // rearLeft = new ModuleSpark(DrivetrainPorts.REAR_LEFT_DRIVE, DrivetrainPorts.REAR_LEFT_TURN, Translation.REAR_LEFT_ANGOFFSET);
@@ -84,6 +77,15 @@ public class Drive extends SubsystemBase implements Logged {
     // totally not sure, would need to check
     
     gyro = new AHRS(NavXComType.kMXP_SPI);
+
+        swerveEstimator = new SwerveDrivePoseEstimator(
+        DriveConstants.Drivetrain.kDriveKinematics,
+        gyro.getRotation2d(),
+        getSwerveModulePosition(),
+        new Pose2d(),
+        DriveConstants.Drivetrain.STATE_STD_DEV,
+        DriveConstants.Drivetrain.VISION_STD_DEV
+    );
 
     odometry = new SwerveDriveOdometry(
       Drivetrain.kDriveKinematics, 
@@ -110,9 +112,6 @@ public class Drive extends SubsystemBase implements Logged {
 
     }
 
-    public Rotation2d getGyroRotation2d(){
-      return gyro.getRotation2d();
-    }
 
     @Log.NT
     public Pose2d getPose2d(){
