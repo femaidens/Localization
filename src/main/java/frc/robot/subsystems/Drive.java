@@ -44,6 +44,8 @@ import monologue.Logged;
 
 public class Drive extends SubsystemBase implements Logged {
 
+  private final VisionII visionII;
+
   private final SwerveDrivePoseEstimator swerveEstimator;
   private final ModuleKraken frontLeft;
   private final ModuleKraken frontRight;
@@ -62,7 +64,7 @@ public class Drive extends SubsystemBase implements Logged {
 
   /** Creates a new Drive. */
   public Drive() {
-
+    visionII = new VisionII();
     // frontLeft = new ModuleSpark(DrivetrainPorts.FRONT_LEFT_DRIVE, DrivetrainPorts.FRONT_LEFT_TURN, Translation.FRONT_LEFT_ANGOFFSET);
     // frontRight = new ModuleSpark(DrivetrainPorts.FRONT_RIGHT_DRIVE, DrivetrainPorts.FRONT_RIGHT_TURN, Translation.FRONT_RIGHT_ANGOFFSET);
     // rearLeft = new ModuleSpark(DrivetrainPorts.REAR_LEFT_DRIVE, DrivetrainPorts.REAR_LEFT_TURN, Translation.REAR_LEFT_ANGOFFSET);
@@ -329,7 +331,7 @@ public class Drive extends SubsystemBase implements Logged {
 
     swerveEstimator.update(gyro.getRotation2d(), getSwerveModulePosition());
 
-    List<EstimatedRobotPose> visionUpdates = VisionII.getVisionUpdates();
+    List<EstimatedRobotPose> visionUpdates = visionII.getVisionUpdates();
 
     for (EstimatedRobotPose update : visionUpdates) {
         swerveEstimator.addVisionMeasurement(

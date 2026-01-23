@@ -20,7 +20,7 @@ public class VisionII {
     private final AprilTagFieldLayout TAG_LAYOUT = 
         AprilTagFieldLayout.loadField(AprilTagFields.k2026RebuiltWelded);
 
-    private static PhotonCamera leftCam, rightCam;
+    private PhotonCamera leftCam, rightCam;
 
     private final Drive drive;
 
@@ -71,16 +71,17 @@ public class VisionII {
         leftEstimator = new PhotonPoseEstimator(TAG_LAYOUT, LEFT_ROBOT_TO_CAM); 
     }
 
-    public static List<EstimatedRobotPose> getVisionUpdates(){
+    public List<EstimatedRobotPose> getVisionUpdates(){
         List<EstimatedRobotPose> results = new ArrayList<>();
-
-        for(var result:rightCam.getAllUnreadResults()){
-            rightEstimator.estimateCoprocMultiTagPose(result).ifPresent(results::add);
-        }
-        for(var result:leftCam.getAllUnreadResults()){
-            leftEstimator.estimateCoprocMultiTagPose(result).ifPresent(results::add);
-        }
-
+            for(var result:rightCam.getAllUnreadResults()){
+                rightEstimator.estimateCoprocMultiTagPose(result).ifPresent(results::add);
+            }
+        
+            for(var result:leftCam.getAllUnreadResults()){
+                leftEstimator.estimateCoprocMultiTagPose(result).ifPresent(results::add);
+            }
+    
         return results;
+        
     }
 }
