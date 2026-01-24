@@ -21,6 +21,7 @@ import com.ctre.phoenix6.SignalLogger;
 import com.studica.frc.AHRS;
 import com.studica.frc.AHRS.NavXComType;
 
+import edu.wpi.first.epilogue.Logged;
 import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -40,6 +41,7 @@ import frc.robot.Ports.DrivetrainPorts;
 import frc.robot.subsystems.DriveConstants.Drivetrain;
 import frc.robot.subsystems.DriveConstants.Translation;
 
+@Logged
 public class Drive extends SubsystemBase {
 
   private final VisionII visionII;
@@ -112,6 +114,7 @@ public class Drive extends SubsystemBase {
 
     }
 
+    
     public Pose2d getPose2d(){
         return swerveEstimator.getEstimatedPosition();
     }

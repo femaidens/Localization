@@ -19,6 +19,7 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.wpilibj.DataLogManager;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.XboxController;
@@ -28,6 +29,7 @@ import frc.robot.subsystems.Drive;
 import frc.robot.subsystems.DriveConstants;
 import frc.robot.subsystems.VisionII;
 
+import edu.wpi.first.epilogue.Epilogue;
 //import frc.robot.subsystems.VisionSim;
 
 /**
@@ -36,6 +38,7 @@ import frc.robot.subsystems.VisionII;
  * this project, you must also update the Main.java file in the project.
  */
 
+@Logged
 public class Robot extends TimedRobot {
   private Command m_autonomousCommand;
 
@@ -64,7 +67,8 @@ public class Robot extends TimedRobot {
     boolean lazyLogging = false;
     // SignalLogger.setPath("/logsNew/");
     // frontLeftCam = new PhotonCamera("2265-ironfish");
-    //Epilogue.bind(this);
+    DataLogManager.start();
+    Epilogue.bind(this);
   }
 
   /**

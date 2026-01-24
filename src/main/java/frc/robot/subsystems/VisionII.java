@@ -38,8 +38,6 @@ public class VisionII {
         leftCam = new PhotonCamera("2265-ironfish");
         rightCam = new PhotonCamera("2265-greenfish");
 
-        
-
         RIGHT_ROBOT_TO_CAM_TRANS = new Translation3d(
             Units.inchesToMeters(11.248), 
             Units.inchesToMeters(-8.818), 
