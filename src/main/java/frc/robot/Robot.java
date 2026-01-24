@@ -14,6 +14,7 @@ import static edu.wpi.first.units.Units.MetersPerSecond;
 import static edu.wpi.first.units.Units.RadiansPerSecond;
 
 import edu.wpi.first.cameraserver.CameraServer;
+import edu.wpi.first.epilogue.Logged;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
@@ -25,16 +26,17 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc.robot.subsystems.Drive;
 import frc.robot.subsystems.DriveConstants;
+import frc.robot.subsystems.VisionII;
+
 //import frc.robot.subsystems.VisionSim;
-import monologue.Logged;
-import monologue.Monologue;
 
 /**
  * The methods in this class are called automatically corresponding to each mode, as described in
  * the TimedRobot documentation. If you change the name of this class or the package after creating
  * this project, you must also update the Main.java file in the project.
  */
-public class Robot extends TimedRobot implements Logged {
+
+public class Robot extends TimedRobot {
   private Command m_autonomousCommand;
 
   private final RobotContainer m_robotContainer;
@@ -60,10 +62,9 @@ public class Robot extends TimedRobot implements Logged {
 
     boolean fileOnly = false;
     boolean lazyLogging = false;
-    Monologue.setupMonologue(this, "Robot", fileOnly, lazyLogging);
     // SignalLogger.setPath("/logsNew/");
     // frontLeftCam = new PhotonCamera("2265-ironfish");
-
+    //Epilogue.bind(this);
   }
 
   /**
@@ -82,9 +83,6 @@ public class Robot extends TimedRobot implements Logged {
     CommandScheduler.getInstance().run();
 
     //isFMSConnected() deprecated
-    Monologue.setFileOnly(DriverStation.isFMSAttached());
-     // This method needs to be called periodically, or no logging annotations will process properly.
-    Monologue.updateAll();
     //visionSim.simulationPeriodic(robotPose);
   }
 

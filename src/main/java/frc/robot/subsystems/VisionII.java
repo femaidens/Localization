@@ -2,7 +2,7 @@ package frc.robot.subsystems;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Handler;
+//import java.util.logging.Handler;
 
 import org.photonvision.EstimatedRobotPose;
 import org.photonvision.PhotonCamera;
@@ -22,7 +22,6 @@ public class VisionII {
 
     private PhotonCamera leftCam, rightCam;
 
-    private final Drive drive;
 
     private final Translation3d RIGHT_ROBOT_TO_CAM_TRANS;
     private final Rotation3d RIGHT_ROBOT_TO_CAM_ROT;
@@ -39,7 +38,7 @@ public class VisionII {
         leftCam = new PhotonCamera("2265-ironfish");
         rightCam = new PhotonCamera("2265-greenfish");
 
-        drive = new Drive();
+        
 
         RIGHT_ROBOT_TO_CAM_TRANS = new Translation3d(
             Units.inchesToMeters(11.248), 

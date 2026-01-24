@@ -39,10 +39,8 @@ import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.Ports.DrivetrainPorts;
 import frc.robot.subsystems.DriveConstants.Drivetrain;
 import frc.robot.subsystems.DriveConstants.Translation;
-import monologue.Annotations.Log;
-import monologue.Logged;
 
-public class Drive extends SubsystemBase implements Logged {
+public class Drive extends SubsystemBase {
 
   private final VisionII visionII;
 
@@ -62,7 +60,7 @@ public class Drive extends SubsystemBase implements Logged {
 
   private ChassisSpeeds speeds = new ChassisSpeeds();
 
-  /** Creates a new Drive. */
+  /** Creates a new Drive. */ 
   public Drive() {
     visionII = new VisionII();
     // frontLeft = new ModuleSpark(DrivetrainPorts.FRONT_LEFT_DRIVE, DrivetrainPorts.FRONT_LEFT_TURN, Translation.FRONT_LEFT_ANGOFFSET);
@@ -114,8 +112,6 @@ public class Drive extends SubsystemBase implements Logged {
 
     }
 
-
-    @Log.NT
     public Pose2d getPose2d(){
         return swerveEstimator.getEstimatedPosition();
     }
@@ -243,28 +239,24 @@ public class Drive extends SubsystemBase implements Logged {
 //   /**
 //    * @return currently-estimated pose of robot
 //    */
-//   @Log.NT
+//
 //   public Pose2d getPose(){
 //     return odometry.getPoseMeters();
 //   }
 
-  @Log.NT
   public SwerveModuleState[] getSwerveModuleStates(){
     return modules.stream().map(m -> m.getState()).toArray(SwerveModuleState[]::new);
   }
 
-  @Log.NT
   public SwerveModuleState[] getDesiredSwerveModuleStates(){
     return modules.stream().map(m -> m.getDesiredState()).toArray(SwerveModuleState[] :: new);
   }
 
-  @Log.NT
   public double[] getVoltage(){
     double[] voltages = {frontLeft.getVoltage(), frontRight.getVoltage(), rearLeft.getVoltage(), rearRight.getVoltage()};
     return voltages;
   }
 
-  @Log.NT
   public double[] getAbsolutes(){
     double[] absolutes = {frontLeft.getAbsolute(), frontRight.getAbsolute(), rearLeft.getAbsolute(), rearRight.getAbsolute()};
     return absolutes;
@@ -287,7 +279,6 @@ public class Drive extends SubsystemBase implements Logged {
    * Gets the angle of the gyro in radians (ideally)
    * @return in radians
    */
-  @Log.NT
   public double getAngle(){
     return -1 * gyro.getAngle();
   }
