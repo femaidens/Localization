@@ -5,32 +5,16 @@
 package frc.robot;
 
 import org.littletonrobotics.urcl.URCL;
-import org.photonvision.PhotonCamera;
-import org.photonvision.PhotonUtils;
 
 import com.ctre.phoenix6.SignalLogger;
 
-import static edu.wpi.first.units.Units.MetersPerSecond;
-import static edu.wpi.first.units.Units.RadiansPerSecond;
-
-import edu.wpi.first.cameraserver.CameraServer;
 import edu.wpi.first.epilogue.Logged;
-import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.geometry.Translation2d;
-import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DataLogManager;
-import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.TimedRobot;
-import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
-import frc.robot.subsystems.Drive;
-import frc.robot.subsystems.DriveConstants;
-import frc.robot.subsystems.VisionII;
 
 import edu.wpi.first.epilogue.Epilogue;
-//import frc.robot.subsystems.VisionSim;
 
 /**
  * The methods in this class are called automatically corresponding to each mode, as described in
@@ -40,9 +24,9 @@ import edu.wpi.first.epilogue.Epilogue;
 
 @Logged
 public class Robot extends TimedRobot {
-  private Command m_autonomousCommand;
+  private Command mAutonomousCommand;
 
-  private final RobotContainer m_robotContainer;
+  private final RobotContainer mRobotContainer;
   //private VisionSim visionSim;
   // private Pose2d robotPose = new Pose2d(new Translation2d(0,0), new Rotation2d(Math.PI/2));
   // private PhotonCamera frontLeftCam;
@@ -59,13 +43,11 @@ public class Robot extends TimedRobot {
     // turn = 0.0;
     // Instantiate our RobotContainer.  This will perform all our button bindings, and put our
     // autonomous chooser on the dashboard.
-    m_robotContainer = new RobotContainer();
+    mRobotContainer = new RobotContainer();
    // visionSim = new VisionSim();
     //drive = new Drive();
 
-    boolean fileOnly = false;
-    boolean lazyLogging = false;
-    // SignalLogger.setPath("/logsNew/");
+      // SignalLogger.setPath("/logsNew/");
     // frontLeftCam = new PhotonCamera("2265-ironfish");
     DataLogManager.start();
     Epilogue.bind(this);
@@ -104,8 +86,8 @@ public class Robot extends TimedRobot {
   public void autonomousInit() {
 
     // schedule the autonomous command (example)
-    if (m_autonomousCommand != null) {
-      m_autonomousCommand.schedule();
+    if (mAutonomousCommand != null) {
+      mAutonomousCommand.schedule();
     }
   }
 
@@ -121,8 +103,8 @@ public class Robot extends TimedRobot {
     // this line or comment it out.
     URCL.start();
     SignalLogger.start();
-    if (m_autonomousCommand != null) {
-      m_autonomousCommand.cancel();
+    if (mAutonomousCommand != null) {
+      mAutonomousCommand.cancel();
     }
   }
 

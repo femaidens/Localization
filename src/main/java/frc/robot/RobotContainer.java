@@ -8,7 +8,6 @@ import frc.robot.Constants.OperatorConstants;
 import frc.robot.subsystems.Drive;
 import edu.wpi.first.epilogue.Logged;
 import edu.wpi.first.math.MathUtil;
-import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
@@ -28,6 +27,7 @@ public class RobotContainer {
     private final CommandXboxController driveJoy = new CommandXboxController(OperatorConstants.DRIVER_PORT);
     private final Drive drive;
 
+    /** Creates a new RobotContainer object */
 public RobotContainer() {
           drive = new Drive();
          configureBindings();
@@ -63,7 +63,7 @@ public RobotContainer() {
     // cancelling on release.
   }
 
-  /**
+  /*
    * Use this to pass the autonomous command to the main {@link Robot} class.
    *
    * @return the command to run in autonomous
