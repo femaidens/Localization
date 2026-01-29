@@ -36,12 +36,13 @@ public class ModuleKraken {
 
     private final double chassisAngularOffset;
 
-    private SwerveModuleState desiredState = null; 
-    double angleSetpoint = 0;
+    private SwerveModuleState desiredState;
+    double angleSetpoint;
     
-    private double voltage; 
+    private double voltage;
 
-    public ModuleKraken(int driveID, int turnID, int CANCoderID, double magnetOffset, double chassisAngularOffset,
+    /** Create a new ModuleKraken object */
+    public ModuleKraken(int driveID, int turnID, int canCoderID, double magnetOffset, double chassisAngularOffset,
             boolean turnInverted) {
         this.chassisAngularOffset = chassisAngularOffset;
 
@@ -49,7 +50,7 @@ public class ModuleKraken {
         configureDriveTalon(driveMotor, Translation.CURRENT_LIMIT);
 
         turnMotor = new TalonFX(turnID, Translation.CANBUS);
-        configureTurnTalon(turnMotor, CANCoderID, Turn.CURRENT_LIMIT, turnInverted);
+        configureTurnTalon(turnMotor, canCoderID, Turn.CURRENT_LIMIT, turnInverted);
 
         drivePIDController = new PIDController(Translation.PID.P, Translation.PID.I, Translation.PID.D); 
         turnPIDController = new PIDController(Turn.PID.P,Turn.PID.I, Turn.PID.D);
@@ -62,23 +63,26 @@ public class ModuleKraken {
         
 
         directionConfig = new MagnetSensorConfigs();
-        turnEncoder = new CANcoder(CANCoderID, Translation.CANBUS);
+        turnEncoder = new CANcoder(canCoderID, Translation.CANBUS);
         directionConfig.withAbsoluteSensorDiscontinuityPoint(0.5);
         directionConfig.MagnetOffset = magnetOffset;
         turnEncoder.getConfigurator().apply(directionConfig.withSensorDirection(SensorDirectionValue.CounterClockwise_Positive));
     }
 
+    /** TODO: Add comment */
     public SwerveModuleState getState() {
         return new SwerveModuleState(getDriveVelocity(),
                 new Rotation2d(getTurnAngle() - chassisAngularOffset));
     }
 
+    /** TODO: Add comment */
     public void setDesiredState(SwerveModuleState state) {
         state.optimize(getState().angle);
         driveMotor.setVoltage(
         driveFF.calculate(state.speedMetersPerSecond) + drivePIDController.calculate(getDriveVelocity(), state.speedMetersPerSecond));
-        
-        if(Math.abs(turnPIDController.getError()) < .2) {
+
+        final double minError = .2;
+        if(Math.abs(turnPIDController.getError()) < minError) {
             turnMotor.setVoltage(0);
         } else {
             turnMotor.setVoltage(turnPIDController.calculate(getState().angle.getRadians(), state.angle.getRadians()));
@@ -86,6 +90,7 @@ public class ModuleKraken {
         desiredState = state;
     }
 
+    /** TODO: Add comment */
     public void setDesiredStateNoPID(SwerveModuleState state) {
         state.optimize(getState().angle);
         angleSetpoint = state.angle.getRadians();
@@ -97,11 +102,13 @@ public class ModuleKraken {
         desiredState = state;
     }
 
+    /** TODO: Add comment */
     @Logged
     public double getVoltage(){
         return voltage;
     }
 
+    /** TODO: Add comment */
     public double getAbsolute(){
         return turnEncoder.getAbsolutePosition().getValueAsDouble();
     }
@@ -109,8 +116,6 @@ public class ModuleKraken {
     /**
      * This configures a TalonFX motor's neutral mode to brake and sets the current
      * limit
-     * 
-     * @param 
      */
     public static void configureDriveTalon(TalonFX motor, int currentLimit) {
         TalonFXConfiguration config = new TalonFXConfiguration();
@@ -123,10 +128,6 @@ public class ModuleKraken {
 
     /**
      * Configures turning TalonFX motor (sensor ratio, current limit, brake)
-     * @param motor
-     * @param encoderID
-     * @param currentLimit
-     * @param inverted
      */
     public static void configureTurnTalon(TalonFX motor, int encoderID, int currentLimit, boolean inverted) {
         TalonFXConfiguration config = new TalonFXConfiguration();
@@ -151,49 +152,59 @@ public class ModuleKraken {
         motor.getConfigurator().apply(config);  
     }
 
+    /** TODO: Add comment */
     public void setDriveVoltage(double volts) {
         driveMotor.setVoltage(volts);
     }
 
+    /** TODO: Add comment */
     public void setTurnVoltage(double volts) {
         turnMotor.setVoltage(volts);
     }
 
+    /** TODO: Add comment */
     public SwerveModulePosition getSwerveModulePosition() {
         return new SwerveModulePosition(getDrivePosition(), getState().angle);
     }
 
+    /** TODO: Add comment */
     public SwerveModuleState getDesiredState() {
         return desiredState;
     }
 
+    /** TODO: Add comment */
     public double getTurnVelocity() {
         return turnEncoder.getVelocity().getValueAsDouble() * Turn.VEL_CONVERSION_FACTOR;
     }
 
+    /** TODO: Add comment */
     public double getDriveVelocity() {
         return driveMotor.getVelocity().getValueAsDouble() * Translation.VEL_CONVERSION_FACTOR;
     }
 
+    /** TODO: Add comment */
     public double getDrivePosition() {
         return driveMotor.getPosition().getValueAsDouble() * Translation.POS_CONVERSION_FACTOR;
     }
 
+    /** TODO: Add comment */
     public double getTurnAngle() {
         return turnEncoder.getAbsolutePosition().getValueAsDouble() / Turn.POS_CONVERSION_FACTOR;
     }
 
+    /** TODO: Add comment */
     public void resetEncoders() {
         driveMotor.setPosition(0);
     }
 
+    /** TODO: Add comment */
     public static SwerveModuleState optimizeTest(SwerveModuleState desiredState, Rotation2d currentAngle) {
         Rotation2d delta = desiredState.angle.minus(currentAngle);
         if (Math.abs(delta.getRadians()) == Math.PI) {
             return new SwerveModuleState(
                     -desiredState.speedMetersPerSecond,
                     currentAngle);
-        } else if (Math.abs(delta.getRadians()) > (3 * Math.PI) / 2) {
+        } else if (Math.abs(delta.getRadians()) > 3 * Math.PI / 2) {
             return new SwerveModuleState(
                     desiredState.speedMetersPerSecond,
                     desiredState.angle.rotateBy(Rotation2d.fromRadians(-(2 * Math.PI - delta.getRadians()))));

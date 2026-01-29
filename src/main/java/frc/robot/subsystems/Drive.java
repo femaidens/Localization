@@ -4,19 +4,11 @@
 
 package frc.robot.subsystems;
 
-import static edu.wpi.first.units.Units.Seconds;
-import static edu.wpi.first.units.Units.Volts;
-
-import static edu.wpi.first.units.Units.Seconds;
-import static edu.wpi.first.units.Units.Volts;
-
 import java.util.List;
-import java.util.Optional;
 import java.util.function.DoubleSupplier;
 
 import org.photonvision.EstimatedRobotPose;
 
-import com.ctre.phoenix6.SignalLogger;
 import com.ctre.phoenix6.SignalLogger;
 import com.studica.frc.AHRS;
 import com.studica.frc.AHRS.NavXComType;
@@ -25,9 +17,7 @@ import edu.wpi.first.epilogue.Logged;
 import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
-import edu.wpi.first.math.kinematics.Kinematics;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
@@ -44,7 +34,7 @@ import frc.robot.subsystems.DriveConstants.Translation;
 @Logged
 public class Drive extends SubsystemBase {
 
-  private final VisionII visionII;
+  private final Vision visionII;
 
   private final SwerveDrivePoseEstimator swerveEstimator;
   private final ModuleKraken frontLeft;
@@ -64,7 +54,7 @@ public class Drive extends SubsystemBase {
 
   /** Creates a new Drive. */ 
   public Drive() {
-    visionII = new VisionII();
+    visionII = new Vision();
     // frontLeft = new ModuleSpark(DrivetrainPorts.FRONT_LEFT_DRIVE, DrivetrainPorts.FRONT_LEFT_TURN, Translation.FRONT_LEFT_ANGOFFSET);
     // frontRight = new ModuleSpark(DrivetrainPorts.FRONT_RIGHT_DRIVE, DrivetrainPorts.FRONT_RIGHT_TURN, Translation.FRONT_RIGHT_ANGOFFSET);
     // rearLeft = new ModuleSpark(DrivetrainPorts.REAR_LEFT_DRIVE, DrivetrainPorts.REAR_LEFT_TURN, Translation.REAR_LEFT_ANGOFFSET);
@@ -81,7 +71,7 @@ public class Drive extends SubsystemBase {
     gyro = new AHRS(NavXComType.kMXP_SPI);
 
         swerveEstimator = new SwerveDrivePoseEstimator(
-        DriveConstants.Drivetrain.kDriveKinematics,
+        DriveConstants.Drivetrain.K_DRIVE_KINEMATICS,
         gyro.getRotation2d(),
         getSwerveModulePosition(),
         new Pose2d(),
@@ -90,7 +80,7 @@ public class Drive extends SubsystemBase {
     );
 
     odometry = new SwerveDriveOdometry(
-      Drivetrain.kDriveKinematics, 
+      Drivetrain.K_DRIVE_KINEMATICS,
       gyro.getRotation2d(), 
       new SwerveModulePosition[] {
         frontLeft.getSwerveModulePosition(),
@@ -114,7 +104,7 @@ public class Drive extends SubsystemBase {
 
     }
 
-    
+    /** TODO: Add comment */
     public Pose2d getPose2d(){
         return swerveEstimator.getEstimatedPosition();
     }
@@ -125,8 +115,6 @@ public class Drive extends SubsystemBase {
    * 
    * @param xSpeed   x direction (front and back)
    * @param ySpeed   y direction (right is positive, left is negative)
-   * @param rotSpeed
-   * @return
    */
   public void drive(DoubleSupplier xSpeed, DoubleSupplier ySpeed, DoubleSupplier rotSpeed){
     double xVel = xSpeed.getAsDouble() * Drivetrain.MAX_SPEED * Drivetrain.SPEED_FACTOR;
@@ -134,7 +122,7 @@ public class Drive extends SubsystemBase {
     double rotVel = rotSpeed.getAsDouble() * Drivetrain.MAX_ROT_SPEED * Drivetrain.SPEED_FACTOR;
 
     speeds = ChassisSpeeds.fromFieldRelativeSpeeds(xVel, yVel, rotVel, gyro.getRotation2d());
-    SwerveModuleState[] moduleStates = Drivetrain.kDriveKinematics.toSwerveModuleStates(speeds);
+    SwerveModuleState[] moduleStates = Drivetrain.K_DRIVE_KINEMATICS.toSwerveModuleStates(speeds);
 
     // return this.run(
     //   () -> {
@@ -146,13 +134,14 @@ public class Drive extends SubsystemBase {
     setModuleStates(moduleStates);
   }
 
+  /** TODO: Add comment */
   public void driveRobotRelative(DoubleSupplier xSpeed, DoubleSupplier ySpeed, DoubleSupplier rotSpeed){
     double xVel = xSpeed.getAsDouble() * Drivetrain.MAX_SPEED * Drivetrain.SPEED_FACTOR;
     double yVel = ySpeed.getAsDouble() * Drivetrain.MAX_SPEED * Drivetrain.SPEED_FACTOR;
     double rotVel = rotSpeed.getAsDouble() * Drivetrain.MAX_ROT_SPEED * Drivetrain.SPEED_FACTOR;
 
     speeds = new ChassisSpeeds(xVel, yVel, rotVel);
-    SwerveModuleState[] moduleStates = Drivetrain.kDriveKinematics.toSwerveModuleStates(speeds);
+    SwerveModuleState[] moduleStates = Drivetrain.K_DRIVE_KINEMATICS.toSwerveModuleStates(speeds);
 
     // return this.run(
     //   () -> {
@@ -176,31 +165,34 @@ public class Drive extends SubsystemBase {
     rearRight.setDesiredStateNoPID(desiredStates[3]); //rearRight.setDesiredStateNoPID(desiredStates[2]);
   }
 
+  /** TODO: Add comment */
   public void setChassisSpeeds(ChassisSpeeds  speedd){
     // ChassisSpeeds x = ChassisSpeeds.fromFieldRelativeSpeeds(speedd, getAngle());
-    SwerveModuleState[] moduleStates = Drivetrain.kDriveKinematics.toSwerveModuleStates(speedd);
+    SwerveModuleState[] moduleStates = Drivetrain.K_DRIVE_KINEMATICS.toSwerveModuleStates(speedd);
     setModuleStates(moduleStates);
   }
 
+  /** TODO: Add comment */
   public ChassisSpeeds getDesiredChassisSpeeds() {
     return speeds;
   }
 
+  /** TODO: Add comment */
   public ChassisSpeeds getCurrentChassisSpeeds(){
-    ChassisSpeeds spede= DriveConstants.Drivetrain.kDriveKinematics.toChassisSpeeds(
-      getSwerveModuleStates()[0],  getSwerveModuleStates()[1], getSwerveModuleStates()[2], getSwerveModuleStates()[3] 
-    );
-    return spede;
+      return Drivetrain.K_DRIVE_KINEMATICS.toChassisSpeeds(
+        getSwerveModuleStates()[0],  getSwerveModuleStates()[1], getSwerveModuleStates()[2], getSwerveModuleStates()[3]
+      );
   }
 
+  /** TODO: Add comment */
   public SwerveModulePosition[] getSwerveModulePosition(){
-     SwerveModulePosition[] swerveModulePositions = new SwerveModulePosition[] {frontLeft.getSwerveModulePosition(), frontRight.getSwerveModulePosition(), rearLeft.getSwerveModulePosition(), rearRight.getSwerveModulePosition()};
-     return swerveModulePositions;
+      return new SwerveModulePosition[] {frontLeft.getSwerveModulePosition(), frontRight.getSwerveModulePosition(), rearLeft.getSwerveModulePosition(), rearRight.getSwerveModulePosition()};
   }
 
   /**
    * x formation with wheels to prevent movement
    */
+  @SuppressWarnings("PMD.LinguisticNaming")
   public Command setXCmd() {
     return this.run(
       () -> {
@@ -216,6 +208,7 @@ public class Drive extends SubsystemBase {
   /**
    * Sets wheels straight for sysid
    */
+  @SuppressWarnings("PMD.LinguisticNaming")
   public Command setStraightCmd(){
     return this.run(
       () -> {
@@ -228,6 +221,7 @@ public class Drive extends SubsystemBase {
     );
   }
 
+  /** TODO: Add comment */
   public Command driveStraightCmd(){
     return this.run(
       () -> {
@@ -247,22 +241,24 @@ public class Drive extends SubsystemBase {
 //     return odometry.getPoseMeters();
 //   }
 
+  /** TODO: Add comment */
   public SwerveModuleState[] getSwerveModuleStates(){
     return modules.stream().map(m -> m.getState()).toArray(SwerveModuleState[]::new);
   }
 
+  /** TODO: Add comment */
   public SwerveModuleState[] getDesiredSwerveModuleStates(){
     return modules.stream().map(m -> m.getDesiredState()).toArray(SwerveModuleState[] :: new);
   }
 
+  /** TODO: Add comment */
   public double[] getVoltage(){
-    double[] voltages = {frontLeft.getVoltage(), frontRight.getVoltage(), rearLeft.getVoltage(), rearRight.getVoltage()};
-    return voltages;
+      return new double[]{frontLeft.getVoltage(), frontRight.getVoltage(), rearLeft.getVoltage(), rearRight.getVoltage()};
   }
 
+  /** TODO: Add comment */
   public double[] getAbsolutes(){
-    double[] absolutes = {frontLeft.getAbsolute(), frontRight.getAbsolute(), rearLeft.getAbsolute(), rearRight.getAbsolute()};
-    return absolutes;
+      return new double[]{frontLeft.getAbsolute(), frontRight.getAbsolute(), rearLeft.getAbsolute(), rearRight.getAbsolute()};
   }
 
   /**
@@ -291,6 +287,7 @@ public class Drive extends SubsystemBase {
    * 
    * @return new yaw angle in radians (ideally)
    */
+  @SuppressWarnings("PMD.LinguisticNaming")
   public double setYawOffset() {
     gyro.setAngleAdjustment(-Math.PI / 2); // need to double check!
     return gyro.getYaw();
@@ -303,6 +300,7 @@ public class Drive extends SubsystemBase {
     gyro.reset();
   }
 
+  /** TODO: Add comment */
   public Command resetGyro(){
     return this.runOnce(
       () -> zeroHeading()
@@ -310,12 +308,13 @@ public class Drive extends SubsystemBase {
   }
 
   /* SYSID CMDS */
+
+  /** TODO: Add comment */
   public Command driveQuasistatic(SysIdRoutine.Direction direction){
-    System.out.println("RUNNING");
-    System.out.println("RUNNING");
     return driveRoutine.quasistatic(direction);
   }
 
+  /** TODO: Add comment */
   public Command driveDynamic(SysIdRoutine.Direction direction) {
     return driveRoutine.dynamic(direction);
   }

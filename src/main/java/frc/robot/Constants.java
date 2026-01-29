@@ -41,8 +41,8 @@ import frc.robot.subsystems.DriveConstants;
  */
 public final class Constants {
   public static class PathPlannerConstants {
-    public static final double massKg = Units.lbsToKilograms(120);
-    public static final double MOI = 1.0/12 * massKg * (Math.pow(DriveConstants.Drivetrain.TRACK_WIDTH, 2) + Math.pow(DriveConstants.Drivetrain.WHEEL_BASE, 2));
+    public static final double MASS_KG = Units.lbsToKilograms(120);
+    public static final double MOI = 1.0/12 * MASS_KG * (Math.pow(DriveConstants.Drivetrain.TRACK_WIDTH, 2) + Math.pow(DriveConstants.Drivetrain.WHEEL_BASE, 2));
     // double WHEEL_RADIUS;
     // double MAX_DRIVE_VELOCITY_MPS;
     // double WHEEL_COF;
@@ -56,22 +56,22 @@ public final class Constants {
   }
 
   public static class VisionConstants {
-    public static final Matrix<N3, N1> kSingleTagStdDevs = VecBuilder.fill(4, 4, 8);
-    public static final Matrix<N3, N1> kMultiTagStdDevs = VecBuilder.fill(0.5, 0.5, 1);
-    public static final AprilTagFieldLayout kTagLayout = AprilTagFieldLayout.loadField(AprilTagFields.k2026RebuiltWelded);
-    public static final Transform2d robotToCam = new Transform2d(
+    public static final Matrix<N3, N1> K_SINGLE_TAG_STD_DEVS = VecBuilder.fill(4, 4, 8);
+    public static final Matrix<N3, N1> K_MULTI_TAG_STD_DEVS = VecBuilder.fill(0.5, 0.5, 1);
+    public static final AprilTagFieldLayout K_TAG_LAYOUT = AprilTagFieldLayout.loadField(AprilTagFields.k2026RebuiltWelded);
+    public static final Transform2d ROBOT_TO_CAM = new Transform2d(
         new Translation2d(Units.inchesToMeters(0), Units.inchesToMeters(0)),
         new Rotation2d(Units.degreesToRadians(0), Units.degreesToRadians(0))); //only for the new drive to pose cmd that uses tag data
-    public static final Transform3d kFrontLeftCamToCenter = new Transform3d(
+    public static final Transform3d K_FRONT_LEFT_CAM_TO_CENTER = new Transform3d(
         new Translation3d(Units.inchesToMeters(0), Units.inchesToMeters(0), Units.inchesToMeters(0)),
         new Rotation3d(Units.degreesToRadians(0), Units.degreesToRadians(0), Units.degreesToRadians(0)));
-    public static final Transform3d kFrontRightCamToCenter = new Transform3d(
+    public static final Transform3d K_FRONT_RIGHT_CAM_TO_CENTER = new Transform3d(
         new Translation3d(Units.inchesToMeters(0), Units.inchesToMeters(0), Units.inchesToMeters(0)),
         new Rotation3d(Units.degreesToRadians(0), Units.degreesToRadians(0), Units.degreesToRadians(0)));
-    public static final Transform3d kRearLeftCamToCenter = new Transform3d(
+    public static final Transform3d K_REAR_LEFT_CAM_TO_CENTER = new Transform3d(
         new Translation3d(Units.inchesToMeters(0), Units.inchesToMeters(0), Units.inchesToMeters(0)),
         new Rotation3d(Units.degreesToRadians(0), Units.degreesToRadians(0), Units.degreesToRadians(0)));
-    public static final Transform3d kRearRightCamToCenter = new Transform3d(
+    public static final Transform3d K_REAR_RIGHT_CAM_TO_CENTER = new Transform3d(
         new Translation3d(Units.inchesToMeters(0), Units.inchesToMeters(0), Units.inchesToMeters(0)),
         new Rotation3d(Units.degreesToRadians(0), Units.degreesToRadians(0), Units.degreesToRadians(0)));
 
@@ -85,19 +85,19 @@ public final class Constants {
     public static final double GOAL_AREA_MIDDLE = 9;
     // public static final double GOAL_Y = 150; //220.25; // y position of apriltag crosshair
     
-    public class TiltPID {
+    public static class TiltPID {
       public static final double P = 3.0; //10
       public static final double I = 0;
       public static final double D = 0;
     }
 
-    public class YawPID {
+    public static class YawPID {
       public static final double P = 0.0015;
       public static final double I = 0;
       public static final double D = 0;
     }
 
-    public class AreaPID {
+    public static class AreaPID {
       public static final double P = 0.02;
       public static final double I = 0;
       public static final double D = 0.0;
@@ -115,26 +115,27 @@ public final class Constants {
     public static final double ABSOLUTE_OFFSET = 0.3;
 
     public static class PIDConstants {
-      public static final double kP = 7.7;//7.0
-      public static final double kI = 0;
-      public static final double kD = 0;
-      public static final double kMaxVelocity = 7;
-      public static final double kMaxAcceleration = 10;
-      public static final TrapezoidProfile.Constraints CONSTRAINTS = new TrapezoidProfile.Constraints(kMaxVelocity,
-          kMaxAcceleration);
+      public static final double K_P = 7.7;//7.0
+      public static final double K_I = 0;
+      public static final double K_D = 0;
+      public static final double K_MAX_VELOCITY = 7;
+      public static final double K_MAX_ACCELERATION = 10;
+      public static final TrapezoidProfile.Constraints CONSTRAINTS = new TrapezoidProfile.Constraints(
+              K_MAX_VELOCITY,
+              K_MAX_ACCELERATION);
     }
 
     public static class ReversePIDConstants {
-      public static final double kP =  4; //3 //2.3; //1.9 //1.5
-      public static final double kI = 0;
-      public static final double kD = 0;
+      public static final double K_P =  4; //3 //2.3; //1.9 //1.5
+      public static final double K_I = 0;
+      public static final double K_D = 0;
     }
 
     public static class FeedForwardConstants {
-      public static final double kS = 0.25722;
-      public static final double kG = 0.18831;
-      public static final double kV = 7.6552;
-      public static final double kA = 0.56958;
+      public static final double K_S = 0.25722;
+      public static final double K_G = 0.18831;
+      public static final double K_V = 7.6552;
+      public static final double K_A = 0.56958;
     }
 
     public static class SetpointConstants {
@@ -161,9 +162,9 @@ public final class Constants {
     public static final int CURRENT_LIMIT = 30;
 
     public static class IntakePIDConstants {
-      public static final double kP = 0.0;
-      public static final double kI = 0.0;
-      public static final double kD = 0.0;
+      public static final double K_P = 0.0;
+      public static final double K_I = 0.0;
+      public static final double K_D = 0.0;
     }
   }
   public static class OuttakeConstants {

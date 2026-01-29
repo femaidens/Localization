@@ -26,10 +26,10 @@ import org.photonvision.targeting.PhotonPipelineResult;
 // @ExtendWith(MockitoExtension.class) tells JUnit to use the Mockito extension.
 // This extension automatically initializes any fields annotated with @Mock.
 @ExtendWith(MockitoExtension.class)
-public class VisionIITest {
+public class VisionTest {
 
     /**
-     * @Mock creates a mock object for the given class.
+     * `@Mock` creates a mock object for the given class.
      * Mocks are "fake" objects that we can control in our tests.
      * Here, we are creating mocks for the dependencies of the VisionII class.
      * This allows us to test VisionII without needing real cameras or estimators.
@@ -50,7 +50,7 @@ public class VisionIITest {
     private EstimatedRobotPose mockEstimatedPose;
 
     // This is the object we are testing.
-    private VisionII vision;
+    private Vision vision;
 
     /**
      * The @BeforeEach annotation marks a method that should be run before each test method.
@@ -62,7 +62,7 @@ public class VisionIITest {
         // We create a new VisionII instance before each test.
         // We use a special constructor that allows us to "inject" our mock dependencies.
         // This is a common pattern called "Dependency Injection" and is key for writing testable code.
-        vision = new VisionII(mockLeftCam, mockRightCam, mockLeftEstimator, mockRightEstimator);
+        vision = new Vision(mockLeftCam, mockRightCam, mockLeftEstimator, mockRightEstimator);
     }
 
     /**
@@ -72,7 +72,7 @@ public class VisionIITest {
      * and returns the estimated poses.
      */
     @Test
-    void getVisionUpdates_WhenCamerasHaveResults_ShouldReturnEstimatedPoses() {
+    void testGetVisionUpdatesWhenCamerasHaveResultsShouldReturnEstimatedPoses() {
         // --- ARRANGE ---
         // In the "Arrange" phase, we set up the state of our mocks.
         // We are defining what should happen when methods are called on our mock objects.
@@ -107,7 +107,7 @@ public class VisionIITest {
      * We expect the getVisionUpdates method to return an empty list.
      */
     @Test
-    void getVisionUpdates_WhenCamerasHaveNoResults_ShouldReturnEmptyList() {
+    void testGetVisionUpdatesWhenCamerasHaveNoResultsShouldReturnEmptyList() {
         // --- ARRANGE ---
         // We configure the mock cameras to return an empty list.
         when(mockLeftCam.getAllUnreadResults()).thenReturn(List.of());
@@ -127,7 +127,7 @@ public class VisionIITest {
      * In this case, the estimator returns an empty Optional.
      */
     @Test
-    void getVisionUpdates_WhenEstimatorsReturnEmpty_ShouldReturnEmptyList() {
+    void testGetVisionUpdatesWhenEstimatorsReturnEmptyShouldReturnEmptyList() {
         // --- ARRANGE ---
         // The cameras have results...
         when(mockLeftCam.getAllUnreadResults()).thenReturn(List.of(mockPipelineResult));
