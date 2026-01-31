@@ -3,6 +3,9 @@ package frc.robot.subsystems;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.when;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.verify;
 
 import java.util.List;
 import java.util.Optional;
@@ -72,7 +75,7 @@ public class VisionIITest {
      * and returns the estimated poses.
      */
     @Test
-    void getVisionUpdates_WhenCamerasHaveResults_ShouldReturnEstimatedPoses() {
+    void testGetVisionUpdatesWithResults() {
         // --- ARRANGE ---
         // In the "Arrange" phase, we set up the state of our mocks.
         // We are defining what should happen when methods are called on our mock objects.
@@ -100,6 +103,14 @@ public class VisionIITest {
         // We also check that the results are the same mock objects we arranged to be returned.
         assertEquals(mockEstimatedPose, results.get(0), "The first pose should be the one from the right camera");
         assertEquals(mockEstimatedPose, results.get(1), "The second pose should be the one from the left camera");
+
+        // Mockito's verify() method is used to check if certain methods on mock objects
+        // were called during the test execution. This ensures that the interactions
+        // with the dependencies happened as expected.
+        verify(mockLeftCam).getAllUnreadResults();
+        verify(mockRightCam).getAllUnreadResults();
+        verify(mockLeftEstimator).estimateCoprocMultiTagPose(mockPipelineResult);
+        verify(mockRightEstimator).estimateCoprocMultiTagPose(mockPipelineResult);
     }
 
     /**
@@ -107,7 +118,7 @@ public class VisionIITest {
      * We expect the getVisionUpdates method to return an empty list.
      */
     @Test
-    void getVisionUpdates_WhenCamerasHaveNoResults_ShouldReturnEmptyList() {
+    void testGetVisionUpdatesWithNoResults() {
         // --- ARRANGE ---
         // We configure the mock cameras to return an empty list.
         when(mockLeftCam.getAllUnreadResults()).thenReturn(List.of());
@@ -119,6 +130,11 @@ public class VisionIITest {
         // --- ASSERT ---
         // We assert that the returned list is empty.
         assertTrue(results.isEmpty(), "The list of poses should be empty");
+
+        verify(mockLeftCam).getAllUnreadResults();
+        verify(mockRightCam).getAllUnreadResults();
+        verify(mockLeftEstimator, never()).estimateCoprocMultiTagPose(any());
+        verify(mockRightEstimator, never()).estimateCoprocMultiTagPose(any());
     }
 
     /**
@@ -127,7 +143,7 @@ public class VisionIITest {
      * In this case, the estimator returns an empty Optional.
      */
     @Test
-    void getVisionUpdates_WhenEstimatorsReturnEmpty_ShouldReturnEmptyList() {
+    void testGetVisionUpdatesWithNoEstimates() {
         // --- ARRANGE ---
         // The cameras have results...
         when(mockLeftCam.getAllUnreadResults()).thenReturn(List.of(mockPipelineResult));
@@ -143,5 +159,10 @@ public class VisionIITest {
         // --- ASSERT ---
         // We assert that the returned list is empty because no poses were added.
         assertTrue(results.isEmpty(), "The list of poses should be empty");
+
+        verify(mockLeftCam).getAllUnreadResults();
+        verify(mockRightCam).getAllUnreadResults();
+        verify(mockLeftEstimator).estimateCoprocMultiTagPose(mockPipelineResult);
+        verify(mockRightEstimator).estimateCoprocMultiTagPose(mockPipelineResult);
     }
 }
